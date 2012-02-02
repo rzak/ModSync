@@ -9,7 +9,7 @@ abstract class ModSync_Snippet_HookAbstract extends ModSync_Snippet_Abstract {
      */
     protected $_hook;
 
-    public function __construct(&$hook) {
+    public function __construct(&$hook = null) {
         parent::__construct();
 //        unset($hook->modx);
 //        unset($hook->formit);

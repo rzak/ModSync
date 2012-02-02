@@ -140,8 +140,21 @@ abstract class ModSync_Plugin_Abstract extends ModSync_Element {
      * This is where we call the current event handler.
      */
     final public function run() {
+        $tstart = explode(' ', microtime());
+        $tstart = $tstart[1] + $tstart[0];
+
         $event_name = $this->getEvent()->name;
-        return $this->$event_name();
+        $return = $this->$event_name($this->getEvent()->params);
+
+        $tstop = explode(' ', microtime());
+        $tstop = $tstop[1] + $tstop[0];
+        $duration = $tstop - $tstart;
+        self::log(sprintf('Plugin: %s (%1.3f seconds)', $this->getName(), $duration), Zend_Log::DEBUG);
+        if ($duration > 1) {
+            self::log(sprintf('Inefficient Plugin Found: %s (%1.3f seconds)', $this->getName(), $duration), Zend_Log::WARN);
+        }
+        
+        return $return;
 
         /**
          * @todo: Do not remove this line for now...

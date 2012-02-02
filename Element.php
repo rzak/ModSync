@@ -103,9 +103,7 @@ abstract class ModSync_Element extends ModSync_Base implements ModSync_IsSyncabl
             $modxElement = self::getModX()->newObject($name, $array);
             $this->onInsert();
         } else {
-            $props = $modxElement->getProperties();
-            $syncable = (bool) @$props['modsync_syncable'];
-            if (!$syncable) {
+            if (!$this->isSyncAllowed($modxElement)) {
                 self::log('Syncing Disabled: ' . $this->getName(), Zend_Log::NOTICE);
                 return $modxElement;
             }
@@ -141,6 +139,17 @@ abstract class ModSync_Element extends ModSync_Base implements ModSync_IsSyncabl
     public function onUpdate() {
         $this->setProperty('modsync_last_synced', date('Y-m-d H:i:s'), 'This element was last synced on this date');
         $this->setProperty('modsync_default_content', $this->getContent(), 'This is the default element content.  It can be used to revert any changes manual changes to this element.', 'textarea');
+    }
+
+    /**
+     * Is Syncable Allowed
+     * 
+     * @param modElement $modxElement
+     * @return boolean
+     */
+    public function isSyncAllowed(modElement $modxElement) {
+        $props = $modxElement->getProperties();
+        return (bool) @$props['modsync_syncable'];
     }
 
     /**

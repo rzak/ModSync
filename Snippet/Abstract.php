@@ -5,6 +5,7 @@ abstract class ModSync_Snippet_Abstract extends ModSync_Element {
     protected $_scriptProperties;
     protected $_params = array();
     protected $_output = null;
+    protected $_profile = true;
 
     public function __construct($scriptProperties = array()) {
         parent::__construct();
@@ -31,8 +32,10 @@ abstract class ModSync_Snippet_Abstract extends ModSync_Element {
      */
     final public function run() {
         try {
-            $tstart = explode(' ', microtime());
-            $tstart = $tstart[1] + $tstart[0];
+            if ($this->_profile) {
+                $tstart = explode(' ', microtime());
+                $tstart = $tstart[1] + $tstart[0];
+            }
 
 
 
@@ -48,18 +51,24 @@ abstract class ModSync_Snippet_Abstract extends ModSync_Element {
             $this->postDispatch();
 
 
-            $tstop = explode(' ', microtime());
-            $tstop = $tstop[1] + $tstop[0];
-            $duration = $tstop - $tstart;
-            self::log(sprintf('Snippet: %s (%1.3f seconds)', $this->getName(), $duration), Zend_Log::DEBUG);
-            if ($duration > 1) {
-                self::log(sprintf('Inefficient Snippet Found: %s (%1.3f seconds)', $this->getName(), $duration), Zend_Log::WARN);
+            if ($this->_profile) {
+                $tstop = explode(' ', microtime());
+                $tstop = $tstop[1] + $tstop[0];
+                $duration = $tstop - $tstart;
+                $this->profile($duration);
             }
             return $this->_output;
         } catch (Exception $e) {
             $msg = 'Snippet (' . $this->getName() . ') failed: ' . $e->getMessage();
             self::log($msg, Zend_Log::ERR);
             die($msg);
+        }
+    }
+
+    protected function profile($duration) {
+        self::log(sprintf('Snippet: %s (%1.3f seconds)', $this->getName(), $duration), Zend_Log::DEBUG);
+        if ($duration > 1) {
+            self::log(sprintf('Inefficient Snippet Found: %s (%1.3f seconds)', $this->getName(), $duration), Zend_Log::WARN);
         }
     }
 
@@ -149,6 +158,10 @@ return $o->run();
 
         $snippet = parent::_sync('modSnippet', array('name' => $this->getName()));
         unset($snippet);
+    }
+
+    public function getProp($name) {
+        return @$this->_scriptProperties[$name];
     }
 
 }

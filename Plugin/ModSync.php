@@ -7,6 +7,7 @@ class ModSync_Plugin_ModSync extends ModSync_Plugin_Abstract {
         if (self::getModX()->context->get('key') == 'mgr') {
             return;
         }
+//        die('here');
         if (isset($_GET['clearCache'])) {
             $this->_doCacheClear();
         }
@@ -17,6 +18,7 @@ class ModSync_Plugin_ModSync extends ModSync_Plugin_Abstract {
         if (isset($_GET['firebugLite'])) {
             $this->_doFirebugLite();
         }
+        return true;
     }
 
     private function _doFirebugLite() {
