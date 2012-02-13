@@ -5,7 +5,7 @@ class ModSync_Autoloader
 
     public static function registerNamespaces()
     {
-        $path = dirname(dirname(__FILE__));
+        $path = __WEB_ROOT_DIR__ . '/core/components';
         $components = scandir($path);
         foreach ($components as $component)
         {

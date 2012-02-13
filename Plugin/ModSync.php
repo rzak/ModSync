@@ -7,13 +7,12 @@ class ModSync_Plugin_ModSync extends ModSync_Plugin_Abstract {
         if (self::getModX()->context->get('key') == 'mgr') {
             return;
         }
-//        die('here');
-        if (isset($_GET['clearCache'])) {
-            $this->_doCacheClear();
+        if (isset($_GET['ModClearCache'])) {
+            $this->_doClearCache();
         }
         if (isset($_GET['ModSync'])) {
             $this->_doSync();
-            $this->_doCacheClear();
+            $this->_doClearCache();
         }
         if (isset($_GET['firebugLite'])) {
             $this->_doFirebugLite();
@@ -25,7 +24,7 @@ class ModSync_Plugin_ModSync extends ModSync_Plugin_Abstract {
         self::getModX()->regClientStartupScript('https://getfirebug.com/firebug-lite.js');
     }
 
-    private function _doCacheClear() {
+    private function _doClearCache() {
         self::log('Clearing Cache', Zend_Log::WARN);
         self::getModX()->getCacheManager()->clearCache();
     }

@@ -57,7 +57,7 @@ class ModSync_Base {
         }
         if ($priority <= self::$_logger_priority) {
             if (null === self::$_logger) {
-                self::$_logger = new Zend_Log(new Zend_Log_Writer_Stream(dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/log/' . date('Ymd') . '-' . $_SERVER['LOG_FILE']));
+                self::$_logger = new Zend_Log(new Zend_Log_Writer_Stream(dirname(__WEB_ROOT_DIR__) . '/log/' . date('Ymd') . '-' . $_SERVER['LOG_FILE']));
             }
             if (is_array($message)) {
                 $message = print_r($message, true);
