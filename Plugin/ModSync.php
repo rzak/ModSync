@@ -47,6 +47,7 @@ class ModSync_Plugin_ModSync extends ModSync_Plugin_Abstract {
                 if (class_exists($class)) {
                     $o = new $class();
                     if (is_a($o, 'ModSync_Component_Abstract')) {
+                        self::log('Syncing: ' . $o->getName(), Zend_Log::DEBUG);
                         $o->sync();
                     }
                 }

@@ -76,4 +76,15 @@ class ModSync_Base {
         self::getModX()->getCacheManager()->clean();
     }
 
+    /**
+     * Add custom package
+     * 
+     * @param string $component 
+     * @return modX
+     */
+    final public static function addPackage($component) {
+        self::getModX()->addPackage(strtolower($component), MODX_CORE_PATH . 'components/' . $component . '/Model/', '');
+        return self::getModX();
+    }
+
 }

@@ -60,6 +60,8 @@ class ModSync_Component_Abstract extends ModSync_Base implements ModSync_HasCate
         foreach ($this->_elements as $element) {
             $this->_syncElements($element);
         }
+        
+        $this->_buildSchema();
     }
 
     /**
@@ -123,6 +125,46 @@ class ModSync_Component_Abstract extends ModSync_Base implements ModSync_HasCate
         foreach ($folders as $folder) {
             $this->_syncElements($type, trim($folder, '/'));
         }
+    }
+
+    protected function _buildSchema() {
+        $name = $this->getName();
+        $schema = MODX_CORE_PATH . 'components/' . $name . '/Model/schema/mysql.schema.xml';
+        $target = MODX_CORE_PATH . 'components/' . $name . '/Model/';
+        if (!is_file($schema)) {
+            return;
+        }
+        
+        
+        $manager = self::getModX()->getManager();
+        $generator = $manager->getGenerator();
+        $generator->classTemplate = <<<EOD
+<?php
+/**
+ * [+phpdoc-package+]
+ */
+class [+class+] extends [+extends+] {}
+?>
+EOD;
+        $generator->platformTemplate = <<<EOD
+<?php
+/**
+ * [+phpdoc-package+]
+ */
+require_once (strtr(realpath(dirname(dirname(__FILE__))), '\\\\', '/') . '/[+class-lowercase+].class.php');
+class [+class+]_[+platform+] extends [+class+] {}
+?>
+EOD;
+        $generator->mapHeader = <<<EOD
+<?php
+/**
+ * [+phpdoc-package+]
+ */
+EOD;
+        $name = $this->getName();
+        $schema = MODX_CORE_PATH . 'components/' . $name . '/Model/schema/mysql.schema.xml';
+        $target = MODX_CORE_PATH . 'components/' . $name . '/Model/';
+        $generator->parseSchema($schema, $target);
     }
 
 }
