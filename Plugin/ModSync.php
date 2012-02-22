@@ -17,7 +17,7 @@ class ModSync_Plugin_ModSync extends ModSync_Plugin_Abstract {
         if (isset($_GET['firebugLite'])) {
             $this->_doFirebugLite();
         }
-        return true;
+        return;
     }
 
     private function _doFirebugLite() {
