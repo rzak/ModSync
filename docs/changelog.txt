@@ -5,3 +5,7 @@ ModSync 0.1.0
 - Added lexicon
 - Added changelog
 - Added templates
+
+ModSync 1.0.0
+====================================
+- Refactored with namespaces

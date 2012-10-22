@@ -1,15 +1,17 @@
 <?php
 
-class ModSync_Base {
+namespace ModSync;
+
+use ModSync;
+
+class Base {
+
+    private $_component;
 
     /**
-     * Logger object
-     *
-     * @var Zend_Log
+     * Construction
+     * @throws Exception 
      */
-    private static $_logger;
-    private static $_logger_priority;
-
     public function __construct() {
         try {
             if (!is_a(self::getModX(), 'modX')) {
@@ -25,66 +27,64 @@ class ModSync_Base {
     /**
      * Returns global modx object
      *
-     * @global modX $modx
-     * @return modX
+     * @global \modX $modx
+     * @return \modX
      */
     final public static function getModX() {
         global $modx;
         return $modx;
     }
 
-    /**
-     * Returns the modx element id
-     * 
-     * @param ModSync_Base $obj
-     * @return int
-     */
-    final public static function getModXId(ModSync_Base $obj) {
-        if (!in_array('ModSync_HasId', class_implements($obj))) {
-            throw new ModSync_Exception('object does not have id');
-        }
-        return $obj->_getModXId();
+    final public static function getWebRootDir() {
+        return __WEB_ROOT_DIR__;
     }
 
-    /**
-     * Simple logging
-     * 
-     * @param mixed $msg 
-     */
-    final public static function log($message, $priority = 3) {
-        if (null === self::$_logger_priority) {
-            self::$_logger_priority = intval($_SERVER['LOG_PRIORITY']);
-        }
-        if ($priority <= self::$_logger_priority) {
-            if (null === self::$_logger) {
-                self::$_logger = new Zend_Log(new Zend_Log_Writer_Stream(dirname(__WEB_ROOT_DIR__) . '/log/' . date('Ymd') . '-' . $_SERVER['LOG_FILE']));
-            }
-            if (is_array($message)) {
-                $message = print_r($message, true);
-            }
-            if ($priority < Zend_Log::DEBUG) {
-                $message .= ' (REQUEST_URI: ' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . ')';
-            }
-            if ($priority < Zend_Log::INFO) {
-                $message .= ' (REFERER: ' . $_SERVER['HTTP_REFERER'] . ')';
-            }
-            self::$_logger->log($message, $priority);
-        }
+    final public static function getCoreDir() {
+        return self::getWebRootDir() . DIRECTORY_SEPARATOR . 'core';
+    }
+
+    final public static function getAssetsDir() {
+        return self::getWebRootDir() . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'assets';
+    }
+
+    final public static function getAssetsComponentsDir() {
+        return self::getAssetsDir() . DIRECTORY_SEPARATOR . 'components';
+    }
+
+    final public static function getCoreComponentsDir() {
+        return self::getCoreDir() . DIRECTORY_SEPARATOR . 'components';
+    }
+
+    final public static function getLogDir() {
+        return dirname(self::getWebRootDir()) . DIRECTORY_SEPARATOR . 'log';
     }
 
     final public static function clearCache() {
-        self::getModX()->getCacheManager()->clean();
+        self::getModX()->getCacheManager()->refresh();
     }
 
     /**
      * Add custom package
      * 
      * @param string $component 
-     * @return modX
+     * @return \modX
      */
     final public static function addPackage($component) {
-        self::getModX()->addPackage(strtolower($component), MODX_CORE_PATH . 'components/' . $component . '/Model/', '');
+        self::getModX()->addPackage(strtolower($component), self::getCoreComponentsDir() . DIRECTORY_SEPARATOR . $component . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR, '');
         return self::getModX();
+    }
+
+    /**
+     * Get component
+     * @return ModSync\Component\ComponentAbstract
+     */
+    final public function getComponent() {
+        if (null === $this->_component) {
+            $chunks = explode('\\', get_class($this), 2);
+            $name = '\\' . $chunks[0] . '\\Component\\Component';
+            $this->_component = new $name;
+        }
+        return $this->_component;
     }
 
 }

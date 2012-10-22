@@ -1,6 +1,7 @@
 <?php
 
-class ModSync_Exception extends Exception
-{
+namespace ModSync;
 
+class Exception extends \Exception {
+    
 }
