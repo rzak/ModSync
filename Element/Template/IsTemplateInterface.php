@@ -4,12 +4,12 @@ namespace ModSync\Element\Template;
 
 use ModSync;
 
-interface IsTemplateInterface extends ModSync\Element\IsElementInterface, ModSync\Element\Template\Variable\HasVariableInterface {
+interface IsTemplateInterface extends ModSync\Element\IsElementInterface, ModSync\Element\Template\Variable\HasVariableInterface, ModSync\HasContentInterface {
 
     /**
      * Returns modTemplate object
      *
      * @return \modTemplate
      */
-    public function getModTemplate();
+    static public function getModTemplate();
 }

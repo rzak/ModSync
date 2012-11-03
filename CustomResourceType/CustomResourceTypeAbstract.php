@@ -1,10 +1,10 @@
 <?php
 
-namespace ModSync\Context;
+namespace ModSync\CustomResourceType;
 
 use ModSync;
 
-abstract class ContextAbstract extends ModSync\Base implements ModSync\IsSyncableInterface {
+abstract class CustomResourceTypeAbstract extends ModSync\Base implements ModSync\IsSyncableInterface {
 
     protected $_syncable = true;
     protected $_key;
@@ -78,14 +78,4 @@ abstract class ContextAbstract extends ModSync\Base implements ModSync\IsSyncabl
         return (bool) $this->_syncable;
     }
 
-    /**
-     * Returns the context key
-     * 
-     * @return string
-     */
-    final static public function getContextKey() {
-        $class = get_called_class();
-        $o = new $class();
-        return $o->getKey();
-    }
 }

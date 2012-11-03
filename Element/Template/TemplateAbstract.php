@@ -12,17 +12,13 @@ abstract class TemplateAbstract extends ModSync\Element\ElementAbstract implemen
      * Sync template object
      */
     final public function sync() {
-        if (!$this->isSyncable()) {
-            return;
-        }
-
-        $template = parent::_sync('modTemplate', array('templatename' => $this->getName()));
+        $modTemplate = parent::_sync('modTemplate', array('templatename' => $this->getName()));
         $this->assignVariables();
         foreach ($this->getVariables() as $tv) {
-            if (!$tvt = self::getModX()->getObject('modTemplateVarTemplate', array('tmplvarid' => $tv->get('id'), 'templateid' => $template->get('id')))) {
+            if (!$tvt = self::getModX()->getObject('modTemplateVarTemplate', array('tmplvarid' => $tv->get('id'), 'templateid' => $modTemplate->get('id')))) {
                 $tvt = self::getModX()->newObject('modTemplateVarTemplate');
                 $tvt->set('tmplvarid', $tv->get('id'));
-                $tvt->set('templateid', $template->get('id'));
+                $tvt->set('templateid', $modTemplate->get('id'));
                 $tvt->set('rank', $tv->get('rank'));
                 $tvt->save();
             }
@@ -39,7 +35,7 @@ abstract class TemplateAbstract extends ModSync\Element\ElementAbstract implemen
     /**
      * Adds a tv to be attached
      *
-     * @param string|Variable\VariableAbstract $tv
+     * @param string|ModSync\Element\Template\Variable\VariableAbstract $tv
      */
     final public function addVariable($tv) {
         try {
@@ -49,7 +45,7 @@ abstract class TemplateAbstract extends ModSync\Element\ElementAbstract implemen
                 }
                 $tv = new $tv();
             }
-            if (!is_a($tv, 'ModSync\Element\Template\Variable\VariableAbstract')) {
+            if (!is_a($tv, 'ModSync\Element\Template\Variable\IsVariableInterface')) {
                 throw new Exception;
             }
             $this->_tvs[$tv->getName()] = $tv;
@@ -61,7 +57,7 @@ abstract class TemplateAbstract extends ModSync\Element\ElementAbstract implemen
     /**
      * Adds an array of tvs
      *
-     * @param Variable\VariableAbstract $tv
+     * @param array $tvs
      */
     final public function addVariables($tvs = array()) {
         foreach ($tvs as $tv) {
@@ -102,13 +98,15 @@ abstract class TemplateAbstract extends ModSync\Element\ElementAbstract implemen
      *
      * @return \modTemplate
      */
-    final public function getModTemplate() {
-        $modxElement = self::getModX()->getObject('modTemplate', array('templatename' => $this->getName()));
-        if (!$modxElement) {
-            $this->sync();
-            return $this->getModTemplate();
+    final static public function getModTemplate() {
+        $class = get_called_class();
+        $o = new $class();
+        $modTemplate = self::getModX()->getObject('modTemplate', array('templatename' => $o->getName()));
+        if (!$modTemplate) {
+            $o->sync();
+            return $o->getModTemplate();
         }
-        return $modxElement;
+        return $modTemplate;
     }
 
 }

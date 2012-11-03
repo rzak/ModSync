@@ -23,12 +23,14 @@ abstract class ComponentAbstract extends ModSync\Base implements ModSync\Compone
     protected $_elements = array(
         'Category' => 'Element/Category',
         'Context' => 'Context',
+        'ContextSetting' => 'Context/Setting',
+        'SystemSetting' => 'System/Setting',
+        'MediaSource' => 'System/MediaSource',
         'Chunk' => 'Element/Chunk',
-//        'Variable' => 'Element/Template/Variable',
+        'Variable' => 'Element/Template/Variable',
         'Template' => 'Element/Template',
         'Snippet' => 'Element/Snippet',
         'Plugin' => 'Element/Plugin',
-        'SystemSetting' => 'System/Setting'
     );
 
     final public function getName() {

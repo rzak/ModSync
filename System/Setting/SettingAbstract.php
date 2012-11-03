@@ -4,7 +4,7 @@ namespace ModSync\System\Setting;
 
 use ModSync;
 
-abstract class SettingAbstract extends ModSync\Base implements ModSync\System\Setting\IsSystemSettingInterface {
+abstract class SettingAbstract extends ModSync\Base implements ModSync\System\Setting\IsSettingInterface {
 
     const TYPE_TEXTFIELD = 'textfield';
     const TYPE_TEXTAREA = 'textarea';
@@ -23,6 +23,7 @@ abstract class SettingAbstract extends ModSync\Base implements ModSync\System\Se
     protected $_syncable = true;
     protected $_key;
     protected $_value;
+    protected $_namespace;
     protected $_xtype = self::TYPE_TEXTFIELD;
     protected $_area;
 
@@ -44,7 +45,7 @@ abstract class SettingAbstract extends ModSync\Base implements ModSync\System\Se
      *
      * @return string
      */
-    final public function getKey() {
+    public function getKey() {
         if (null === $this->_key) {
             $chunks = explode('_', str_replace('\\', '_', get_class($this)), 4);
             $this->_key = strtolower($chunks[0] . '__' . $chunks[3]);
@@ -53,7 +54,19 @@ abstract class SettingAbstract extends ModSync\Base implements ModSync\System\Se
     }
 
     /**
-     * Returns element's key
+     * Returns element's namespace
+     *
+     * @return string
+     */
+    final public function getNamespace() {
+        if (null === $this->_namespace) {
+            $this->_namespace = $this->getComponent()->getNamespace()->get('name');
+        }
+        return $this->_namespace;
+    }
+    
+    /**
+     * Returns element's area
      *
      * @return string
      */
@@ -76,24 +89,24 @@ abstract class SettingAbstract extends ModSync\Base implements ModSync\System\Se
     /**
      * Sync context object
      */
-    final public function sync() {
+    public function sync() {
         if (!$this->isSyncable()) {
             return;
         }
-        /* @var $modxElement \modSystemSetting */
-        $modxElement = self::getModX()->getObject('modSystemSetting', array('key' => $this->getKey(), 'namespace' => $this->getComponent()->getNamespace()->get('name')));
-        if ($modxElement) {
+        /* @var $modElement \modSystemSetting */
+        $modElement = self::getModX()->getObject('modSystemSetting', array('key' => $this->getKey(), 'namespace' => $this->getNamespace()));
+        if ($modElement) {
             ModSync\Logger::debug('Already exists: ' . get_called_class());
         } else {
             ModSync\Logger::info('Inserting: ' . get_called_class());
-            $modxElement = self::getModX()->newObject('modSystemSetting');
-            $modxElement->set('key', strtolower($this->getKey()));
-            $modxElement->set('namespace', $this->getComponent()->getNamespace()->get('name'));
-            $modxElement->set('value', $this->_value);
-            $modxElement->set('xtype', $this->_xtype);
-            $modxElement->set('area', $this->getArea());
+            $modElement = self::getModX()->newObject('modSystemSetting');
+            $modElement->set('key', strtolower($this->getKey()));
+            $modElement->set('namespace', $this->getNamespace());
+            $modElement->set('value', $this->_value);
+            $modElement->set('xtype', $this->_xtype);
+            $modElement->set('area', $this->getArea());
             $this->onInsert();
-            $modxElement->save();
+            $modElement->save();
         }
     }
 

@@ -2,7 +2,6 @@
 
 namespace ModSync\Element\Plugin;
 
-use StdClass;
 use ModSync;
 
 /**
@@ -20,110 +19,7 @@ abstract class PluginAbstract extends ModSync\Element\ElementAbstract implements
     public $args;
     protected $_default_event_settings = array('priority' => 0, 'propertyset' => 0);
     protected $_event_settings = array();
-    protected $_available_events = array(
-        'OnBeforeCacheUpdate',
-        'OnBeforeChunkFormDelete',
-        'OnBeforeChunkFormSave',
-        'OnBeforeDocFormDelete',
-        'OnBeforeDocFormSave',
-        'OnBeforeEmptyTrash',
-        'OnBeforeManagerLogin', // Something wrong with this event
-        'OnBeforeManagerLogout',
-        'OnBeforeManagerPageInit',
-        'OnBeforePluginFormDelete',
-        'OnBeforePluginFormSave',
-        'OnBeforeSaveWebPageCache',
-        'OnBeforeSnipFormDelete',
-        'OnBeforeSnipFormSave',
-        'OnBeforeTempFormDelete',
-        'OnBeforeTempFormSave',
-        'OnBeforeTVFormDelete',
-        'OnBeforeTVFormSave',
-        'OnBeforeUserActivate',
-        'OnBeforeUserFormDelete',
-        'OnBeforeUserFormSave',
-        'OnBeforeWebLogin',
-        'OnBeforeWebLogout',
-        'OnCacheUpdate',
-        'OnCategoryBeforeRemove',
-        'OnCategoryBeforeSave',
-        'OnCategoryRemove',
-        'OnCategorySave',
-        'OnChunkBeforeRemove',
-        'OnChunkBeforeSave',
-        'OnChunkFormDelete',
-        'OnChunkFormPrerender',
-        'OnChunkFormRender',
-        'OnChunkFormSave',
-        'OnChunkRemove',
-        'OnChunkSave',
-        'OnContextBeforeRemove',
-        'OnContextBeforeSave',
-        'OnContextFormPrerender',
-        'OnContextFormRender',
-        'OnContextRemove',
-        'OnContextSave',
-        'OnDocFormDelete',
-        'OnDocFormPrerender',
-        'OnDocFormRender',
-        'OnDocFormSave',
-        'OnDocPublished',
-        'OnDocUnPublished',
-        'OnEmptyTrash',
-        'OnFileManagerUpload',
-        'OnHandleRequest',
-        'OnInitCulture',
-        'OnLoadWebDocument',
-        'OnLoadWebPageCache',
-        'OnManagerAuthentication',
-        'OnManagerLogin',
-        'OnManagerLoginFormPrerender',
-        'OnManagerLoginFormRender',
-        'OnManagerLogout',
-        'OnManagerPageInit',
-        'OnPageNotFound',
-        'OnPageUnauthorized',
-        'OnParseDocument',
-        'OnPluginBeforeRemove',
-        'OnPluginBeforeSave',
-        'OnPluginEventRemove',
-        'OnPluginFormDelete',
-        'OnPluginFormPrerender',
-        'OnPluginFormRender',
-        'OnPluginFormSave',
-        'OnPluginRemove',
-        'OnPluginSave',
-        'OnPropertySetBeforeRemove',
-        'OnPropertySetBeforeSave',
-        'OnPropertySetRemove',
-        'OnPropertySetSave',
-        'OnResourceGroupBeforeRemove',
-        'OnResourceGroupBeforeSave',
-        'OnResourceGroupRemove',
-        'OnResourceGroupSave',
-        'OnResourceUndelete',
-        'OnRichTextBrowserInit',
-        'OnRichTextEditorInit',
-        'OnRichTextEditorRegister',
-        'OnSiteRefresh',
-        'OnSiteSettingsRender',
-        'OnUserActivate',
-        'OnUserBeforeRemove',
-        'OnUserBeforeSave',
-        'OnUserChangePassword',
-        'OnUserFormDelete',
-        'OnUserFormSave',
-        'OnUserNotFound',
-        'OnUserRemove',
-        'OnUserSave',
-        'OnWebAuthentication',
-        'OnWebLogin',
-        'OnWebLogout',
-        'OnWebPageComplete',
-        'OnWebPageInit',
-        'OnWebPagePrerender',
-        'OnResourceDuplicate',
-    );
+    static protected $_available_events;
     private $_events;
 
     /**
@@ -247,7 +143,7 @@ if (file_exists(\ModSync\Base::getCoreComponentsDir() . DIRECTORY_SEPARATOR . "'
             foreach ($methods as $method) {
                 if (strpos(substr($method, 0, strlen(self::EVENT_METHOD_PREFIX)), self::EVENT_METHOD_PREFIX) !== false) {
                     $eventName = substr($method, strlen(self::EVENT_METHOD_PREFIX));
-                    if (!in_array($eventName, $this->_available_events)) {
+                    if (!in_array($eventName, self::_getAvailableEvents())) {
                         continue;
                     }
                     $event = $this->_default_event_settings;
@@ -268,6 +164,17 @@ if (file_exists(\ModSync\Base::getCoreComponentsDir() . DIRECTORY_SEPARATOR . "'
      */
     final private function _getMethods() {
         return get_class_methods($this);
+    }
+
+    final static protected function _getAvailableEvents() {
+        if (null === self::$_available_events) {
+            self::$_available_events = array();
+            $c = self::getModX()->getCollection('modEvent');
+            foreach ($c as $e) {
+                self::$_available_events[] = $e->get('name');
+            }
+        }
+        return self::$_available_events;
     }
 
 }

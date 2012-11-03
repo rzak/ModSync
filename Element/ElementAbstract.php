@@ -3,7 +3,6 @@
 namespace ModSync\Element;
 
 use ReflectionClass;
-use ReflectionException;
 use SplFileInfo;
 use ModSync;
 
@@ -16,7 +15,7 @@ abstract class ElementAbstract extends ModSync\Base implements ModSync\Element\I
     protected $_name;
     protected $_description;
     protected $_locked = 1;
-    private $_properties = array();
+    protected $_properties = array();
     private $_modifiedTime;
 
     /**
@@ -24,7 +23,7 @@ abstract class ElementAbstract extends ModSync\Base implements ModSync\Element\I
      *
      * @return string
      */
-    final public function getName() {
+    public function getName() {
         if (null === $this->_name) {
             $chunks = explode('_', str_replace('\\', '_', get_class($this)), 4);
             $this->_name = $chunks[0] . '_' . $chunks[3];
@@ -76,18 +75,18 @@ abstract class ElementAbstract extends ModSync\Base implements ModSync\Element\I
         if (!$this->isSyncable()) {
             return false;
         }
-        /* @var $modxElement \modElement */
-        $modxElement = self::getModX()->getObject($name, $array);
-        if (!$modxElement) {
-            $modxElement = self::getModX()->newObject($name, $array);
+        /* @var $modElement \modElement */
+        $modElement = self::getModX()->getObject($name, $array);
+        if (!$modElement) {
+            $modElement = self::getModX()->newObject($name, $array);
             $this->onInsert();
             ModSync\Logger::info('Inserting: ' . get_called_class());
         } else {
-            if (!$this->_isSyncAllowed($modxElement)) {
+            if (!$this->_isSyncAllowed($modElement)) {
                 ModSync\Logger::debug('Syncing disabled by user: ' . get_called_class());
                 return false;
             }
-            if (!$this->_isSyncNeeded($modxElement)) {
+            if (!$this->_isSyncNeeded($modElement)) {
                 ModSync\Logger::debug('No changes to: ' . get_called_class());
                 return false;
             }
@@ -95,18 +94,32 @@ abstract class ElementAbstract extends ModSync\Base implements ModSync\Element\I
             ModSync\Logger::info('Updating: ' . get_called_class());
         }
 
-        if (null === $modxElement) {
+        if (null === $modElement) {
             throw new Exception('Trying to sync with null element');
         }
-        $modxElement->setContent($this->getContent());
-        if ($this->hasCategory()) {
-            $modxElement->set('category', $this->getCategory()->getId());
+        if ($this instanceof \ModSync\HasContentInterface) {
+            $modElement->setContent($this->getContent());
         }
-        $modxElement->set('description', $this->getDescription());
-        $modxElement->set('locked', intval($this->_locked));
-        $modxElement->setProperties($this->_properties, true);
-        $modxElement->save();
-        return $modxElement;
+        if ($this->hasCategory()) {
+            $modElement->set('category', $this->getCategory()->getId());
+        }
+        $modElement->set('description', $this->getDescription());
+        $modElement->set('locked', intval($this->_locked));
+        $modElement->setProperties($this->_properties, true);
+        if ($this->onBeforeSave($modElement) !== false) {
+            $modElement->save();
+        }
+        return $modElement;
+    }
+
+    /**
+     * Hook before save, returning false will abandon save
+     * 
+     * @param \modElement $modElement
+     * @return boolean
+     */
+    public function onBeforeSave(\modElement &$modElement) {
+        return true;
     }
 
     /**
@@ -115,7 +128,9 @@ abstract class ElementAbstract extends ModSync\Base implements ModSync\Element\I
     public function onInsert() {
         $this->setProperty('modsync_syncable', true, 'Determines if this element has been synced using ModSync plugin', 'combo-boolean');
         $this->setProperty('modsync_last_synced', date('Y-m-d H:i:s', $this->_getModifiedTime()), 'This element was last synced on this date');
-        $this->setProperty('modsync_default_content', $this->getContent(), 'This is the default element content.  It can be used to revert any changes manual changes to this element.', 'textarea');
+        if ($this instanceof \ModSync\HasContentInterface) {
+            $this->setProperty('modsync_default_content', $this->getContent(), 'This is the default element content.  It can be used to revert any changes manual changes to this element.', 'textarea');
+        }
     }
 
     /**
@@ -123,7 +138,9 @@ abstract class ElementAbstract extends ModSync\Base implements ModSync\Element\I
      */
     public function onUpdate() {
         $this->setProperty('modsync_last_synced', date('Y-m-d H:i:s', $this->_getModifiedTime()), 'This element was last synced on this date');
-        $this->setProperty('modsync_default_content', $this->getContent(), 'This is the default element content.  It can be used to revert any changes manual changes to this element.', 'textarea');
+        if ($this instanceof \ModSync\HasContentInterface) {
+            $this->setProperty('modsync_default_content', $this->getContent(), 'This is the default element content.  It can be used to revert any changes manual changes to this element.', 'textarea');
+        }
     }
 
     /**

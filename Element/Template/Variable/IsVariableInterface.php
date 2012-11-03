@@ -4,7 +4,7 @@ namespace ModSync\Element\Template\Variable;
 
 use ModSync;
 
-interface IsVariableInterface extends ModSync\IsSyncableInterface, ModSync\Element\Category\HasCategoryInterface {
+interface IsVariableInterface extends ModSync\Element\IsElementInterface {
 
     /**
      * Returns caption
@@ -21,9 +21,9 @@ interface IsVariableInterface extends ModSync\IsSyncableInterface, ModSync\Eleme
     public function getType();
 
     /**
-     * Returns the description field
+     * Returns \modTemplateVar object
      *
-     * @return string
+     * @return \modTemplateVar
      */
-    public function getDescription();
+    static public function getModTemplateVar();
 }

@@ -4,7 +4,7 @@ namespace ModSync\Element\Snippet;
 
 use ModSync;
 
-interface IsSnippetInterface extends ModSync\Element\IsElementInterface, ModSync\Element\Parameter\HasParameterInterface {
+interface IsSnippetInterface extends ModSync\Element\IsElementInterface, ModSync\Element\Parameter\HasParameterInterface, ModSync\HasContentInterface {
 
     /**
      * This is where the magic happens... modx snippet should always call this

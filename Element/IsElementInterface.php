@@ -4,7 +4,7 @@ namespace ModSync\Element;
 
 use ModSync;
 
-interface IsElementInterface extends ModSync\IsSyncableInterface, ModSync\Element\Category\HasCategoryInterface, ModSync\HasContentInterface {
+interface IsElementInterface extends ModSync\IsSyncableInterface, ModSync\Element\Category\HasCategoryInterface {
 
     /**
      * Returns element's name
@@ -19,4 +19,11 @@ interface IsElementInterface extends ModSync\IsSyncableInterface, ModSync\Elemen
      * @return string
      */
     public function getDescription();
+
+    /**
+     * Hook before save
+     * 
+     * @param \modElement $modElement
+     */
+    public function onBeforeSave(\modElement &$modElement);
 }

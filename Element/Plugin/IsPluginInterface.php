@@ -4,7 +4,7 @@ namespace ModSync\Element\Plugin;
 
 use ModSync;
 
-interface IsPluginInterface extends ModSync\Element\IsElementInterface, ModSync\Element\HasProfilingInterface {
+interface IsPluginInterface extends ModSync\Element\IsElementInterface, ModSync\Element\HasProfilingInterface, ModSync\HasContentInterface {
 
     /**
      * This is where the magic happens... modx snippet should always call this
