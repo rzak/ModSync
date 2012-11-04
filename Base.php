@@ -14,7 +14,7 @@ class Base {
      * @throws \ModSync\Exception 
      */
     public function __construct() {
-        if (!(self::getModX() instanceof modX)) {
+        if (!(self::getModX() instanceof \modX)) {
             throw new \ModSync\Exception('modx object not found');
         }
     }
