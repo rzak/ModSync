@@ -2,15 +2,13 @@
 if (!defined('MODX_API_MODE')) {
     define('MODX_API_MODE', false);
 }
-require_once '../../web/config/auto_prepend.php';
+require_once '../../../web/config/auto_prepend.php';
 @include(\ModSync\Base::getCoreDir() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.core.php');
 if (!defined('MODX_CORE_PATH')) define('MODX_CORE_PATH', \ModSync\Base::getCoreDir() . DIRECTORY_SEPARATOR);
-$_SERVER['LOG_PRIORITY'] = 7;
-$_SERVER['LOG_FILE'] = 'web.log';
 
 
 /* include the modX class */
-if (!@include_once (MODX_CORE_PATH . "model/modx/modx.class.php")) {
+if (!@include_once (MODX_CORE_PATH . 'model/modx/modx.class.php')) {
     $errorMessage = 'Site temporarily unavailable';
     @include(MODX_CORE_PATH . 'error/unavailable.include.php');
     header('HTTP/1.1 503 Service Unavailable');
@@ -34,6 +32,6 @@ if (!is_object($modx) || !($modx instanceof modX)) {
 
 /* Initialize the default 'web' context */
 $modx->initialize('web');
-$component = new ModSync\Component\Component;
+$component = new \ModSync\Component\Component;
 $component->sync();
 echo 'done';

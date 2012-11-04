@@ -12,18 +12,22 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'Base.php';
 class Autoloader {
 
     public static function register() {
-        $path = __WEB_ROOT_DIR__ . '/core/components';
-
         /**
-         * Instantiate the autoloader and register devlin / app namespaces
+         * Register ModSync namespace
          */
         $autoLoader = new Zend\Loader\StandardAutoloader(array('autoregister_zf' => true));
         $autoLoader->registerNamespace('ModSync', Base::getCoreComponentsDir() . DIRECTORY_SEPARATOR . __NAMESPACE__);
         $autoLoader->register();
 
-        $components = new DirectoryIterator($path);
+        /**
+         * Register all other namespaces
+         */
+        $components = new DirectoryIterator(Base::getCoreComponentsDir());
         foreach ($components as $component) {
             if ($component->isDot()) {
+                continue;
+            }
+            if ($component->getFilename() == 'ModSync') {
                 continue;
             }
             $componentFile = new SplFileInfo($component->getPathname() . DIRECTORY_SEPARATOR . 'Component' . DIRECTORY_SEPARATOR . 'Component.php');

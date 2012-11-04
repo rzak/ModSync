@@ -18,30 +18,65 @@ class Logger extends Base {
     private static $_priority;
     private static $_enabled;
 
+    /**
+     * Alert
+     * 
+     * @param mixed $message
+     */
     final public static function alert($message) {
         self::log($message, self::ALERT);
     }
 
+    /**
+     * Critical
+     * 
+     * @param mixed $message
+     */
     final public static function critical($message) {
         self::log($message, self::CRIT);
     }
 
+    /**
+     * Error
+     * 
+     * @param mixed $message
+     */
     final public static function error($message) {
         self::log($message, self::ERR);
     }
 
+    /**
+     * Warning
+     * 
+     * @param mixed $message
+     */
     final public static function warn($message) {
         self::log($message, self::WARN);
     }
 
+    /**
+     * Notice
+     * 
+     * @param mixed $message
+     */
     final public static function notice($message) {
         self::log($message, self::NOTICE);
     }
 
+    /**
+     * Info
+     * 
+     * @param mixed $message
+     */
     final public static function info($message) {
         self::log($message, self::INFO);
     }
 
+    /**
+     * Debug
+     * 
+     * @param mixed $message
+     */
     final public static function debug($message) {
         self::log($message, self::DEBUG);
     }

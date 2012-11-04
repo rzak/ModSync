@@ -9,10 +9,13 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
     const CLASS_FILE_SYSTEM = 'sources.modFileMediaSource';
     const CLASS_AMAZON_S3 = 'sources.modS3MediaSource';
 
+    protected $_supported_media_sources = array(
+        self::CLASS_FILE_SYSTEM
+    );
     protected $_syncable = true;
     protected $_name;
     protected $_description;
-    protected $_class_key = self::CLASS_FILE_SYSTEM;
+    protected $_class_key;
     protected $_properties = array(
         'basePath' => array(
             'name' => 'basePath',
@@ -31,7 +34,7 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
             'lexicon' => 'core:source'
         ),
     );
-    protected $_is_stream = 1;
+    protected $_is_stream = true;
 
     /**
      * Setup url
@@ -66,9 +69,25 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
     }
 
     /**
+     * Returns class_key for media source
+     * 
+     * @return string
+     * @throws ModSync\System\MediaSource\Exception
+     */
+    public function getClassKey() {
+        if (null === $this->_class_key) {
+            $this->_class_key = self::CLASS_FILE_SYSTEM;
+        }
+        if (!in_array($this->_class_key, $this->_supported_media_sources)) {
+            throw new ModSync\System\MediaSource\Exception(sprintf('Media source `%s` not supported', $this->_class_key));
+        }
+        return $this->_class_key;
+    }
+
+    /**
      * Sync media source
      */
-    public function sync() {
+    final public function sync() {
         if (!$this->isSyncable()) {
             return;
         }
@@ -85,7 +104,7 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
             $modElement = self::getModX()->newObject('modMediaSource');
             $modElement->set('name', $this->getName());
             $modElement->set('description', $this->getDescription());
-            $modElement->set('class_key', $this->_class_key);
+            $modElement->set('class_key', $this->getClassKey());
             $this->_properties['basePath']['value'] = 'assets' . DIRECTORY_SEPARATOR . $this->getUrl();
             $this->_properties['baseUrl']['value'] = 'assets' . DIRECTORY_SEPARATOR . $this->getUrl();
             $modElement->setProperties($this->_properties);
@@ -108,7 +127,7 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
      *
      * @return boolean
      */
-    public function isSyncable() {
+    final public function isSyncable() {
         return (bool) $this->_syncable;
     }
 
@@ -128,7 +147,7 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
         $modMediaSource = self::getModX()->getObject('modMediaSource', array('name' => $o->getName()));
         if (!$modMediaSource) {
             $o->sync();
-            return $o->getModMediaSource();
+            return $o::getModMediaSource();
         }
         return $modMediaSource;
     }
