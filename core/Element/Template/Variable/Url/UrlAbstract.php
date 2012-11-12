@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class UrlAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'url';
+    protected $_type = self::TYPE_URL;
 
     /**
      * Returns tv's type
@@ -14,7 +14,7 @@ abstract class UrlAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'url';
+        return self::TYPE_URL;
     }
 
 }

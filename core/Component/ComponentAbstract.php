@@ -49,12 +49,34 @@ abstract class ComponentAbstract extends ModSync\Base implements ModSync\Compone
             return;
         }
         ModSync\Logger::notice('Syncing: ' . $this->getName());
+        $this->beforeSyncHook();
         $this->_createNamespace();
         $dir = self::getCoreComponentsDir() . DIRECTORY_SEPARATOR . $this->getName();
         foreach ($this->_elements as $element) {
             $this->_syncFolder($dir . DIRECTORY_SEPARATOR . $element);
         }
-//        $this->_buildSchema();
+        $this->afterSyncHook();
+    }
+
+    /**
+     * Add custom package
+     */
+    final public function addExtensionPackage() {
+        self::getModX()->addExtensionPackage($this->getName(), '[[++core_path]]components' . DIRECTORY_SEPARATOR . $this->getName() . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR);
+    }
+
+    /**
+     * A hook for before sync processes
+     */
+    public function beforeSyncHook() {
+        
+    }
+
+    /**
+     * A hook for after sync processes
+     */
+    public function afterSyncHook() {
+        
     }
 
     /**
@@ -132,46 +154,6 @@ abstract class ComponentAbstract extends ModSync\Base implements ModSync\Compone
             }
             $it->next();
         }
-    }
-
-    protected function _buildSchema() {
-        ModSync\Logger::info('disable ' . __METHOD__ . ' for now');
-        $name = $this->getName();
-        $schema = MODX_CORE_PATH . 'components/' . $name . '/Model/schema/mysql.schema.xml';
-        $target = MODX_CORE_PATH . 'components/' . $name . '/Model/';
-        if (!is_file($schema)) {
-            return;
-        }
-
-
-        $manager = self::getModX()->getManager();
-        $generator = $manager->getGenerator();
-        $generator->classTemplate = <<<EOD
-<?php
-/**
- * [+phpdoc-package+]
- */
-class [+class+] extends [+extends+] {}
-?>
-EOD;
-        $generator->platformTemplate = <<<EOD
-<?php
-/**
- * [+phpdoc-package+]
- */
-require_once (strtr(realpath(dirname(dirname(__FILE__))), '\\\\', '/') . '/[+class-lowercase+].class.php');
-class [+class+]_[+platform+] extends [+class+] {}
-?>
-EOD;
-        $generator->mapHeader = <<<EOD
-<?php
-/**
- * [+phpdoc-package+]
- */
-EOD;
-        $schema = MODX_CORE_PATH . 'components/' . $name . '/Model/schema/mysql.schema.xml';
-        $target = MODX_CORE_PATH . 'components/' . $name . '/Model/';
-        $generator->parseSchema($schema, $target);
     }
 
 }

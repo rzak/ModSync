@@ -4,6 +4,9 @@ namespace ModSync\Element\Category;
 
 use ModSync;
 
+/**
+ * @todo commented out methods until netbeans fixes it's parse
+ */
 interface HasCategoryInterface {
 
     /**
@@ -11,19 +14,19 @@ interface HasCategoryInterface {
      *
      * @return ModSync\Element\Category\IsCategoryInterface
      */
-    public function getCategory();
+    //public function getCategory();
 
     /**
      * Checks if element belongs to category
      * 
      * @return boolen
      */
-    public function hasCategory();
+    //public function hasCategory();
 
     /**
      * Sets category
      *
      * @param mixed
      */
-    public function setCategory($category);
+    //public function setCategory($category);
 }

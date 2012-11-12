@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class HiddenAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'hidden';
+    protected $_type = self::TYPE_HIDDEN;
 
     /**
      * Returns tv's type
@@ -14,7 +14,7 @@ abstract class HiddenAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'hidden';
+        return self::TYPE_HIDDEN;
     }
 
 }

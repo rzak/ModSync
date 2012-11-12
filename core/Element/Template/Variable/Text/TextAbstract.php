@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class TextAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'text';
+    protected $_type = self::TYPE_TEXT;
 
     /**
      * Returns tv's type
@@ -14,7 +14,7 @@ abstract class TextAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'text';
+        return self::TYPE_TEXT;
     }
 
 }

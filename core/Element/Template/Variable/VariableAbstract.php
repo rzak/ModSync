@@ -5,6 +5,24 @@ namespace ModSync\Element\Template\Variable;
 use ModSync;
 
 abstract class VariableAbstract extends ModSync\Element\ElementAbstract implements ModSync\Element\Template\Variable\IsVariableInterface {
+    const TYPE_CHECKBOX = 'checkbox';
+    const TYPE_DATE = 'date';
+    const TYPE_DROPDOWN = 'listbox';
+    const TYPE_EMAIL = 'email';
+    const TYPE_FILE = 'file';
+    const TYPE_AUTOTAG = 'autotag';
+    const TYPE_HIDDEN = 'hidden';
+    const TYPE_IMAGE = 'image';
+    const TYPE_LISTBOX_MULTIPLE = 'listbox-multiple';
+    const TYPE_NUMBER = 'number';
+    const TYPE_OPTION = 'option';
+    const TYPE_RESOURCE_LIST = 'resourcelist';
+    const TYPE_RICHTEXT = 'richtext';
+    const TYPE_TAG = 'tag';
+    const TYPE_TEXT = 'text';
+    const TYPE_TEXTAREA = 'textarea';
+    const TYPE_URL = 'url';
+    
 
     protected $_availableTypes = array(
         'text',

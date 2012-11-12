@@ -96,17 +96,6 @@ class Base {
     }
 
     /**
-     * Add custom package
-     * 
-     * @param string $component 
-     * @return \modX
-     */
-    final public static function addPackage($component) {
-        self::getModX()->addPackage(strtolower($component), self::getCoreComponentsDir() . DIRECTORY_SEPARATOR . $component . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR, '');
-        return self::getModX();
-    }
-
-    /**
      * Returns component
      * 
      * @return ModSync\Component\ComponentAbstract

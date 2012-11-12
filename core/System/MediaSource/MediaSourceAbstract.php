@@ -91,17 +91,14 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
         if (!$this->isSyncable()) {
             return;
         }
-        if (null === self::getModX()->newObject('modMediaSource')) {
-            self::getModX()->addPackage('sources', self::getCoreDir() . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'modx' . DIRECTORY_SEPARATOR);
-        }
-
+        
         /* @var $modElement \modMediaSource */
-        $modElement = self::getModX()->getObject('modMediaSource', array('name' => $this->getName()));
+        $modElement = self::getModX()->getObject('sources.modMediaSource', array('name' => $this->getName()));
         if ($modElement) {
             ModSync\Logger::debug('Already exists: ' . get_called_class());
         } else {
             ModSync\Logger::info('Inserting: ' . get_called_class());
-            $modElement = self::getModX()->newObject('modMediaSource');
+            $modElement = self::getModX()->newObject('sources.modMediaSource');
             $modElement->set('name', $this->getName());
             $modElement->set('description', $this->getDescription());
             $modElement->set('class_key', $this->getClassKey());
@@ -140,11 +137,11 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
         $class = get_called_class();
         $o = new $class();
 
-        if (null === self::getModX()->newObject('modMediaSource')) {
-            self::getModX()->addPackage('sources', self::getCoreDir() . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'modx' . DIRECTORY_SEPARATOR);
-        }
+//        if (null === self::getModX()->newObject($o->getClassKey())) {
+//            self::getModX()->addPackage('sources', self::getCoreDir() . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'modx' . DIRECTORY_SEPARATOR);
+//        }
 
-        $modMediaSource = self::getModX()->getObject('modMediaSource', array('name' => $o->getName()));
+        $modMediaSource = self::getModX()->getObject('sources.modMediaSource', array('name' => $o->getName()));
         if (!$modMediaSource) {
             $o->sync();
             return $o::getModMediaSource();

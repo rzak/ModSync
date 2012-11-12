@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class DateAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'date';
+    protected $_type = self::TYPE_DATE;
 
     /**
      * Returns tv's type
@@ -14,7 +14,7 @@ abstract class DateAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'date';
+        return self::TYPE_DATE;
     }
 
 }

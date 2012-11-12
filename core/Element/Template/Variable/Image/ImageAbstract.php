@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class ImageAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'image';
+    protected $_type = self::TYPE_IMAGE;
 
     /**
      * Returns tv's type
@@ -14,7 +14,7 @@ abstract class ImageAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'image';
+        return self::TYPE_IMAGE;
     }
 
 }

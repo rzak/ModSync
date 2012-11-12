@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class RichtextAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'richtext';
+    protected $_type = self::TYPE_RICHTEXT;
 
     /**
      * Returns tv's type
@@ -14,7 +14,7 @@ abstract class RichtextAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'richtext';
+        return self::TYPE_RICHTEXT;
     }
 
 }

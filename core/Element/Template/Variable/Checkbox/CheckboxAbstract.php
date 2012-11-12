@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class CheckboxAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'checkbox';
+    protected $_type = self::TYPE_CHECKBOX;
 
     public function __construct() {
         parent::__construct();
@@ -20,7 +20,7 @@ abstract class CheckboxAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'checkbox';
+        return self::TYPE_CHECKBOX;
     }
 
     abstract public function getElements();

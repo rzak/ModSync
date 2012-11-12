@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class DropdownAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'listbox';
+    protected $_type = self::TYPE_DROPDOWN;
 
     public function __construct() {
         parent::__construct();
@@ -20,7 +20,7 @@ abstract class DropdownAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'listbox';
+        return self::TYPE_DROPDOWN;
     }
 
     abstract public function getElements();

@@ -13,7 +13,6 @@ use ModSync;
 class Sync extends ModSync\Element\Plugin\PluginAbstract {
 
     protected function eventOnHandleRequest() {
-        self::getModX()->addExtensionPackage('Swatches', ModSync\Base::getCoreComponentsDir() . DIRECTORY_SEPARATOR . 'Swatches' . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR);
         if (self::getModX()->context->get('key') == 'mgr') {
             return;
         }

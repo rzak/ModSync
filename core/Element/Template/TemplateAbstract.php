@@ -13,14 +13,18 @@ abstract class TemplateAbstract extends ModSync\Element\ElementAbstract implemen
      */
     final public function sync() {
         $modTemplate = parent::_sync('modTemplate', array('templatename' => $this->getName()));
-        $this->assignVariables();
-        foreach ($this->getVariables() as $tv) {
-            if (!$tvt = self::getModX()->getObject('modTemplateVarTemplate', array('tmplvarid' => $tv->get('id'), 'templateid' => $modTemplate->get('id')))) {
-                $tvt = self::getModX()->newObject('modTemplateVarTemplate');
-                $tvt->set('tmplvarid', $tv->get('id'));
-                $tvt->set('templateid', $modTemplate->get('id'));
-                $tvt->set('rank', $tv->get('rank'));
-                $tvt->save();
+        if ($modTemplate) {
+            $this->assignVariables();
+            /* @var $tv ModSync\Element\Template\Variable\IsVariableInterface */
+            foreach ($this->getVariables() as $tv) {
+                $tvt = self::getModX()->getObject('modTemplateVarTemplate', array('tmplvarid' => $tv->getModTemplateVar()->get('id'), 'templateid' => $modTemplate->get('id')));
+                if (!$tvt) {
+                    $tvt = self::getModX()->newObject('modTemplateVarTemplate');
+                    $tvt->set('tmplvarid', $tv->getModTemplateVar()->get('id'));
+                    $tvt->set('templateid', $modTemplate->get('id'));
+                    $tvt->set('rank', $tv->getModTemplateVar()->get('rank'));
+                    $tvt->save();
+                }
             }
         }
     }
@@ -36,30 +40,32 @@ abstract class TemplateAbstract extends ModSync\Element\ElementAbstract implemen
      * Adds a tv to be attached
      *
      * @param string|ModSync\Element\Template\Variable\VariableAbstract $tv
+     * @throws ModSync\Element\Template\Exception
      */
     final public function addVariable($tv) {
-        try {
-            if (is_string($tv)) {
-                if (!is_callable($tv . '::sync')) {
-                    throw new Exception;
-                }
-                $tv = new $tv();
+        if (is_string($tv)) {
+            if (!is_callable($tv . '::sync')) {
+                throw new Exception('Invalid TV: ' . (string) $tv);
+                ;
             }
-            if (!is_a($tv, 'ModSync\Element\Template\Variable\IsVariableInterface')) {
-                throw new Exception;
-            }
-            $this->_tvs[$tv->getName()] = $tv;
-        } catch (Exception $e) {
-            throw new Exception('Invalid TV: ' . (string) $tv);
+            $tv = new $tv();
         }
+        if (!($tv instanceof ModSync\Element\Template\Variable\IsVariableInterface)) {
+            throw new Exception('Template Variable does not implements IsVariableInterface');
+        }
+        $this->_tvs[$tv->getName()] = $tv;
     }
 
     /**
      * Adds an array of tvs
      *
      * @param array $tvs
+     * @throws ModSync\Element\Template\Exception
      */
     final public function addVariables($tvs = array()) {
+        if (!is_array($tvs)) {
+            throw new Exception('tvs is expected to be an array');
+        }
         foreach ($tvs as $tv) {
             $this->addVariable($tv);
         }

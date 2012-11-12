@@ -6,7 +6,7 @@ use ModSync\Element\Template\Variable;
 
 abstract class TextareaAbstract extends Variable\VariableAbstract {
 
-    protected $_type = 'textarea';
+    protected $_type = self::TYPE_TEXTAREA;
 
     /**
      * Returns tv's type
@@ -14,7 +14,7 @@ abstract class TextareaAbstract extends Variable\VariableAbstract {
      * @return string
      */
     final public function getType() {
-        return 'textarea';
+        return self::TYPE_TEXTAREA;
     }
 
 }
