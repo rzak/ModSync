@@ -144,7 +144,7 @@ abstract class VariableAbstract extends ModSync\Element\ElementAbstract implemen
     /**
      * Returns modx element's field value
      *
-     * @return modTemplateVar
+     * @return \modTemplateVar
      */
     final static public function getModTemplateVar() {
         $class = get_called_class();
