@@ -5,6 +5,7 @@ namespace ModSync\Element\Template\Variable;
 use ModSync;
 
 abstract class VariableAbstract extends ModSync\Element\ElementAbstract implements ModSync\Element\Template\Variable\IsVariableInterface {
+
     const TYPE_CHECKBOX = 'checkbox';
     const TYPE_DATE = 'date';
     const TYPE_DROPDOWN = 'listbox';
@@ -22,7 +23,6 @@ abstract class VariableAbstract extends ModSync\Element\ElementAbstract implemen
     const TYPE_TEXT = 'text';
     const TYPE_TEXTAREA = 'textarea';
     const TYPE_URL = 'url';
-    
 
     protected $_availableTypes = array(
         'text',
@@ -116,7 +116,33 @@ abstract class VariableAbstract extends ModSync\Element\ElementAbstract implemen
      * Syncs an element with modx
      */
     final public function sync() {
-        parent::_sync('modTemplateVar', array('name' => $this->getName()));
+        $modTemplateVar = parent::_sync('modTemplateVar', array('name' => $this->getName()));
+        if ($this->getSource() > 0) {
+            if (!$modTemplateVar) {
+                $modTemplateVar = self::getModTemplateVar();
+            }
+            $sourceElements = self::getModX()->getCollection('sources.modMediaSourceElement', array(
+                'object' => $modTemplateVar->get('id'),
+                'object_class' => 'modTemplateVar',
+                    ));
+
+            /** @var modMediaSourceElement $sourceElement */
+            foreach ($sourceElements as $sourceElement) {
+                $sourceElement->remove();
+            }
+
+
+            $contextElements = self::getModX()->getCollection('modContext', array('key:!=' => 'mgr'));
+            foreach ($contextElements as $context) {
+                /** @var modMediaSourceElement $sourceElement */
+                $sourceElement = self::getModX()->newObject('sources.modMediaSourceElement');
+                $sourceElement->set('object', $modTemplateVar->get('id'));
+                $sourceElement->set('object_class', 'modTemplateVar');
+                $sourceElement->set('context_key', $context->get('key'));
+                $sourceElement->set('source', $this->getSource());
+                $sourceElement->save();
+            }
+        }
     }
 
     /**

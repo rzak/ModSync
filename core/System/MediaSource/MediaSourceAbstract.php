@@ -33,8 +33,17 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
             'value' => '',
             'lexicon' => 'core:source'
         ),
+        'baseUrlRelative' => array(
+            'name' => 'baseUrlRelative',
+            'desc' => 'prop_file.baseUrlRelative_desc',
+            'type' => 'combo-boolean',
+            'options' => array(),
+            'value' => true,
+            'lexicon' => 'core:source'
+        ),
     );
     protected $_is_stream = true;
+    protected $_relative_url = false;
 
     /**
      * Setup url
@@ -91,7 +100,7 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
         if (!$this->isSyncable()) {
             return;
         }
-        
+
         /* @var $modElement \modMediaSource */
         $modElement = self::getModX()->getObject('sources.modMediaSource', array('name' => $this->getName()));
         if ($modElement) {
@@ -103,7 +112,8 @@ abstract class MediaSourceAbstract extends ModSync\Base implements ModSync\Syste
             $modElement->set('description', $this->getDescription());
             $modElement->set('class_key', $this->getClassKey());
             $this->_properties['basePath']['value'] = 'assets' . DIRECTORY_SEPARATOR . $this->getUrl();
-            $this->_properties['baseUrl']['value'] = 'assets' . DIRECTORY_SEPARATOR . $this->getUrl();
+            $this->_properties['baseUrl']['value'] = ($this->_relative_url ? '' : '/') . 'assets/' . $this->getUrl();
+            $this->_properties['baseUrlRelative']['value'] = $this->_relative_url;
             $modElement->setProperties($this->_properties);
             @mkdir(self::getAssetsDir() . DIRECTORY_SEPARATOR . trim($this->getUrl(), '/'), 0755, true);
             $this->onInsert();

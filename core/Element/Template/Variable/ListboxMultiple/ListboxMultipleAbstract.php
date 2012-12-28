@@ -7,6 +7,8 @@ use ModSync\Element\Template\Variable;
 abstract class ListboxMultipleAbstract extends Variable\VariableAbstract {
 
     protected $_type = self::TYPE_LISTBOX_MULTIPLE;
+    protected $_display = 'delim';
+    protected $_output_properties = array('delimiter' => ',');
 
     public function __construct() {
         parent::__construct();

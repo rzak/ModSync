@@ -7,8 +7,53 @@ use SplFileInfo;
 use ModSync;
 
 abstract class ElementAbstract extends ModSync\Base implements ModSync\Element\IsElementInterface {
+    ###
+    # START OF HAS CATEGORY TRAIT
+    ###
+    /**
+     * I disabled the use of traits because I need this module to be php 5.3 complient
+     */
+    //use ModSync\Element\Category\HasCategoryTrait;
 
-    use ModSync\Element\Category\HasCategoryTrait;
+    protected $_category;
+
+    /**
+     * Checks if element belongs to category
+     *
+     * @return boolen
+     */
+    final public function hasCategory() {
+        $this->_category = ModSync\Element\Category\CategoryAbstract::toObject($this->_category);
+        if ($this->_category) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns Category
+     *
+     * @return ModSync\Element\Category\IsCategoryInterface
+     */
+    final public function getCategory() {
+        if (!$this->hasCategory()) {
+            throw new Exception('Element does not belong to category');
+        }
+        return $this->_category;
+    }
+
+    /**
+     * Sets category
+     *
+     * @param mixed
+     */
+    final public function setCategory($category) {
+        $this->_category = ModSync\Element\Category\CategoryAbstract::toObject($category);
+    }
+
+    ###
+    # END OF HAS CATEGORY TRAIT
+    ###
 
     protected $_syncable = true;
     protected $_id;

@@ -22,6 +22,15 @@ abstract class SettingAbstract extends ModSync\System\Setting\SettingAbstract {
     }
 
     /**
+     * Returns element's value
+     *
+     * @return mixed
+     */
+    public function getValue() {
+        return $this->_value;
+    }
+
+    /**
      * Returns element's context key
      *
      * @return string
@@ -51,7 +60,7 @@ abstract class SettingAbstract extends ModSync\System\Setting\SettingAbstract {
             $modxElement->set('context_key', strtolower($this->getContextKey()));
             $modxElement->set('key', strtolower($this->getKey()));
             $modxElement->set('namespace', $this->getNamespace());
-            $modxElement->set('value', $this->_value);
+            $modxElement->set('value', $this->getValue());
             $modxElement->set('xtype', $this->_xtype);
             $modxElement->set('area', $this->getArea());
             $this->onInsert();

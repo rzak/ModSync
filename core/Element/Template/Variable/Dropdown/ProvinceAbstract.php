@@ -21,7 +21,7 @@ abstract class ProvinceAbstract extends DropdownAbstract {
     );
 
     final public function getElements() {
-        $out = [];
+        $out = array();
         foreach (self::$PROVINCES as $key => $name) {
             $out[] = sprintf('%s==%s', $name, $key);
         }
